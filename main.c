@@ -1,64 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ccrucian <ccrucian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/07 18:31:56 by ccrucian          #+#    #+#             */
-/*   Updated: 2026/06/11 16:59:54 by ccrucian         ###   ########.fr       */
+/*   Created: 2026/06/11 14:44:24 by ccrucian          #+#    #+#             */
+/*   Updated: 2026/06/11 15:13:42 by ccrucian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-/*
-* Returns the length until \n
-*/
-int		ft_len_line(char *buffer)
-{
-	int		i;
-
-	i = 0;
-	while (buffer[i] && buffer[i] != '\n')
-		i++;
-	i++; //per metterci dentro anche newline;
-	return (i); 
-}
-
-int		find_char_n(char *buffer)
-{
-	int		i;
-	int		count;
-
-	i = 0;
-	while (buffer[i])
-	{
-		if (buffer[i] == '\n')
-			count++;
-		i++;
-	}
-	return (count);
-}
-
-char	*get_next_line(int fd)
-{
-	char	buffer[BUFFER_SIZE + 1];
-	char	*line;
-	static char	*tmp;
-	int		i;
-
-	i = 0;
-	read(fd, buffer, BUFFER_SIZE);
-	line = malloc(sizeof(char) * ft_len_line + 1);
-	if (!line)
-		return (NULL);
-	while (line[i])
-	{
-		
-	}
-	return (line);
-}
 
 int main(void)
 {
@@ -67,6 +19,7 @@ int main(void)
 
     fd = open("text.txt", O_RDONLY);
     str = get_next_line(fd);
+    
     while (str)
     {
         str = get_next_line(fd);
