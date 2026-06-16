@@ -63,24 +63,19 @@ char    *ft_strdup_newline(char *str)
         s[i] = str[i];
         i++;
     }
-    s[i] = '\0';
+    if (str[i] == '\n')
+        s[i] = str[i];
+    s[++i] = '\0';
     return (s);
 }
 
-
-/*
-* Returns the length until \n
-*/
-int	ft_len_line(char *s)
+void    free_and_null(char **s)
 {
-	int	i;
-
-	i = 0;
-	while (s[i] && s[i] != '\n')
-		i++;
-	if (s[i] == '\n')
-		i++; //per metterci dentro anche newline;
-	return (i); 
+    if (*s)
+    {
+        free(*s);
+        *s = NULL;
+    }
 }
 
 /*

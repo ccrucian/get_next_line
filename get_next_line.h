@@ -14,7 +14,9 @@
 
 # define GET_NEXT_LINE_H
 
-# define BUFFER_SIZE 1024
+#ifndef BUFFER_SIZE
+# define BUFFER_SIZE 42
+#endif
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -23,10 +25,11 @@
 
 char	*get_next_line(int fd);
 char	*save_in_backup(char *backup, int fd);
+char    *join_buffer(char *backup, char *buffer);
 char    *ft_strdup_newline(char *str);
 char    *ft_strchr(char c, char *str);
-int	ft_len_line(char *s);
-int     ft_strlen(char *s);
+void    free_and_null(char *s)
+int     ft_strlen(char *s)
 char    *update_backup(char *backup);
 
 #endif

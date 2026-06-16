@@ -13,29 +13,32 @@
 #include "get_next_line.h"
 
 /*
-*	Counts how many '\n' characters are in the string.
+*	
 */
-int	count_newline(char *buffer)
+char	*join_buffer(char *backup, char *buffer)
 {
 	int		i;
-	int		count;
+	int		j;
+	char	*joint;
 
-	count = 0;
 	i = 0;
-	while (buffer[i])
+	j = 0;
+	joint = malloc(ft_strlen(backup) + ft_strlen(buffer) + 1);
+	if (!joint)
+		return (free(backup), NULL);
+	while (backup[i])
 	{
-		if (buffer[i] == '\n')
-			count++;
+		joint[i] = backup[i];
 		i++;
 	}
-	return (count);
+	while (buffer[j])
+		joint[i++] = buffer[j++];
+	joint[i] = '\0';
+	free(backup);
+	return (joint);
 }
 
 
-
-/*
-*	
-*/
 char	*save_in_backup(char *backup, int fd)
 {
 	char	buffer[BUFFER_SIZE + 1];
@@ -45,18 +48,16 @@ char	*save_in_backup(char *backup, int fd)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read < 0)
-		{
-			free(backup);
-			return (NULL);
-		}
+			return (free(backup), NULL);
 		if (bytes_read == 0)
 			break ;
 		buffer[bytes_read] = '\0';
 		backup = join_buffer(backup, buffer);
+		if (!backup)
+			return NULL;
 	}
 	return (backup);
 }
-
 
 
 char	*get_next_line(int fd)
@@ -76,6 +77,12 @@ char	*get_next_line(int fd)
 	backup = save_in_backup(backup, fd);
 	if (!backup)
 		return NULL;
+	if (backup[0] == '\0')
+	{
+		free(backup);
+		backup = NULL;
+		return NULL;
+	}
 	line = ft_strdup_newline(backup);
 	backup = update_backup(backup);
 	return (line);
@@ -85,14 +92,17 @@ int main(void)
 {
     int     fd;
     char    *str;
+	int		i;
 
-    fd = open("text.txt", O_RDONLY);
+	i = 79;
+    fd = open("subject_getnextline.md", O_RDONLY);
     str = get_next_line(fd);
-    while (str)
-    {
-        str = get_next_line(fd);
-        printf("%s\n", str);
+    while (str && i)
+	{
+		printf("%s", str);
 		free(str);
+        str = get_next_line(fd);
+		i--;
     }
     close(fd);
     return (0);
