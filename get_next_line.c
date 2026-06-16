@@ -13,24 +13,14 @@
 #include "get_next_line.h"
 
 /*
-* Returns the length until \n
+*	Counts how many '\n' characters are in the string.
 */
-int		ft_len_line(char *buffer)
-{
-	int		i;
-
-	i = 0;
-	while (buffer[i] && buffer[i] != '\n')
-		i++;
-	i++; //per metterci dentro anche newline;
-	return (i); 
-}
-
-int		find_char_n(char *buffer)
+int	count_newline(char *buffer)
 {
 	int		i;
 	int		count;
 
+	count = 0;
 	i = 0;
 	while (buffer[i])
 	{
@@ -41,22 +31,53 @@ int		find_char_n(char *buffer)
 	return (count);
 }
 
-char	*get_next_line(int fd)
+
+
+/*
+*	
+*/
+char	*save_in_backup(char *backup, int fd)
 {
 	char	buffer[BUFFER_SIZE + 1];
-	char	*line;
-	static char	*tmp;
-	int		i;
+	ssize_t		bytes_read;
 
-	i = 0;
-	read(fd, buffer, BUFFER_SIZE);
-	line = malloc(sizeof(char) * ft_len_line + 1);
-	if (!line)
-		return (NULL);
-	while (line[i])
+	while (!ft_strchr('\n', backup))
 	{
-		
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		if (bytes_read < 0)
+		{
+			free(backup);
+			return (NULL);
+		}
+		if (bytes_read == 0)
+			break ;
+		buffer[bytes_read] = '\0';
+		backup = join_buffer(backup, buffer);
 	}
+	return (backup);
+}
+
+
+
+char	*get_next_line(int fd)
+{
+	char	*line;
+	static char	*backup;
+	
+	if (BUFFER_SIZE <= 0 || fd < 0 || read(fd, 0, 0) < 0)
+		return (NULL);
+	if (!backup)
+	{
+		backup = malloc(1);
+		if (!backup)
+			return (NULL);
+		backup[0] = '\0';
+	}
+	backup = save_in_backup(backup, fd);
+	if (!backup)
+		return NULL;
+	line = ft_strdup_newline(backup);
+	backup = update_backup(backup);
 	return (line);
 }
 
@@ -71,6 +92,7 @@ int main(void)
     {
         str = get_next_line(fd);
         printf("%s\n", str);
+		free(str);
     }
     close(fd);
     return (0);

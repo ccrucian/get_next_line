@@ -12,4 +12,105 @@
 
 #include "get_next_line.h"
 
+char    *update_backup(char *backup)
+{
+    char    *update;
+    int     i;
+    int     j;
 
+    i = 0;
+    j = 0;
+    while (backup[i] && backup[i] != '\n')
+        i++;
+    if (backup[i] == '\0')
+        return (free(backup), NULL);
+    i++;
+    if (backup[i] == '\0')
+        return (free(backup), NULL);
+    update = malloc((ft_strlen(backup) - i) + 1);
+    if (!update)
+        return (free(backup), NULL);
+    while (backup[i])
+        update[j++] = backup[i++];
+    update[j] = '\0';
+    free(backup);
+    return (update);
+}
+
+
+/*
+*   alloca una nuova stringa e ci copia la stringa passata
+    fino al carattere '\n' compreso, il terminatore
+    e la ritorna.
+*/
+char    *ft_strdup_newline(char *str)
+{
+    int     i;
+    int     len;
+    char    *s;
+
+    i = 0;
+    len = 0;
+    while (str[len] && str[len] != '\n')
+        len++;
+    if (str[len] == '\n')
+        len++;
+    s = malloc(sizeof(char) * (len + 1));
+    if (!s)
+        return (NULL);
+    while (str[i] && str[i] != '\n')
+    {
+        s[i] = str[i];
+        i++;
+    }
+    s[i] = '\0';
+    return (s);
+}
+
+
+/*
+* Returns the length until \n
+*/
+int	ft_len_line(char *s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i] && s[i] != '\n')
+		i++;
+	if (s[i] == '\n')
+		i++; //per metterci dentro anche newline;
+	return (i); 
+}
+
+/*
+*   Se la stringa contiene il carattere passato,
+*   la funzione ritorna il puntatore alla stringa che
+*   punta a quel carattere.
+*/
+char    *ft_strchr(char c, char *str)
+{
+    int     i;
+
+    i = 0;
+    while (str[i])
+    {
+        if (str[i] == c)
+            return (&str[i]);
+        i++;
+    }
+    return (NULL);
+}
+
+/*
+*   Restituisce la lunghezza della stringa.
+*/
+int     ft_strlen(char *s)
+{
+    int     i;
+
+    i = 0;
+    while (s[i])
+        i++;
+    return (i);
+}
