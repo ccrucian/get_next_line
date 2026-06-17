@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ccrucian <ccrucian@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/07 18:31:56 by ccrucian          #+#    #+#             */
-/*   Updated: 2026/06/17 14:30:18 by ccrucian         ###   ########.fr       */
+/*   Updated: 2026/06/17 14:50:46 by ccrucian         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*join_buffer(char *backup, char *buffer)
 {
@@ -61,26 +61,26 @@ char	*save_in_backup(char *backup, int fd)
 
 char	*get_next_line(int fd)
 {
-	static char	*backup;	
 	char		*line;
+	static char	*backup[FD_SIZE];
 
 	if (BUFFER_SIZE <= 0 || fd < 0)
 		return (NULL);
-	if (!backup)
+	if (!backup[fd])
 	{
-		backup = malloc(1);
-		if (!backup)
+		backup[fd] = malloc(1);
+		if (!backup[fd])
 			return (NULL);
-		backup[0] = '\0';
+		backup[fd][0] = '\0';
 	}
-	backup = save_in_backup(backup, fd);
-	if (!backup)
-		return (free(backup), NULL);
-	if (backup[0] == '\0')
-		return (free_and_null(&backup), NULL);
-	line = ft_strdup_newline(backup);
+	backup[fd] = save_in_backup(backup[fd], fd);
+	if (!backup[fd])
+		return (NULL);
+	if (backup[fd][0] == '\0')
+		return (free_and_null(&backup[fd]), NULL);
+	line = ft_strdup_newline(backup[fd]);
 	if (!line)
 		return (free(line), NULL);
-	backup = update_backup(backup);
+	backup[fd] = update_backup(backup[fd]);
 	return (line);
 }
